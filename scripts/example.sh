@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
-# Run the same check on two machines (A and B) and log the exact command, each machine's
+# Example script: run the same check on two machines (A and B) and log the exact command, each machine's
 # output, and the UTC time it ran.
 #
-#   scripts/compare.sh ssh 'uname -a'            # same shell command over SSH on A and B
-#   scripts/compare.sh api /containers/json      # same Docker API GET on A and B
-#   scripts/compare.sh time ssh 'true' 10        # timing: N runs per machine, 3 s apart
+#   scripts/example.sh ssh 'uname -a'            # same shell command over SSH on A and B
+#   scripts/example.sh api /containers/json      # same Docker API GET on A and B
+#   scripts/example.sh time ssh 'true' 10        # timing: N runs per machine, 3 s apart
 #
 # A and B both default to the local test machine, so the script can be built and tried
 # against one box; point them at two hosts with A_HOST/A_SSH/A_API and B_HOST/B_SSH/B_API.

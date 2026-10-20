@@ -33,17 +33,17 @@ curl -s http://127.0.0.1:2375/containers/json
 DOCKER_HOST=tcp://127.0.0.1:2375 docker run --rm hello-world   # docker CLI against the API
 
 # Run a check on A and B and log the command, outputs and UTC times to evidence.log
-scripts/compare.sh ssh 'uname -a'
-scripts/compare.sh api /info
+scripts/example.sh ssh 'uname -a'
+scripts/example.sh api /info
 
 # Timing: 10 runs on A, then 10 on B, 3 s apart, every number reported
-scripts/compare.sh time ssh 'ls /usr/bin | wc -l' 10
+scripts/example.sh time ssh 'ls /usr/bin | wc -l' 10
 
 # Record a whole terminal session as plain text
 script -q session.log
 ```
 
-`compare.sh` runs each check on two machines, A and B, and logs both. Here both default to this
+`scripts/example.sh` is a starting point for your own script: it runs each check on two machines, A and B, and logs both. Here both default to this
 test machine, so each check runs twice against the same box, which is enough to build and
 debug the script. If you changed the ports, export `SSH_PORT` and `API_PORT` in your shell
 too. To compare two real hosts later, set `A_HOST`, `A_SSH`, `A_API`, `B_HOST`, `B_SSH` and
@@ -61,7 +61,7 @@ or keep it apart with `SSH_OPTS="-o UserKnownHostsFile=$HOME/.ssh/test_known_hos
 - Even on `127.0.0.1`, other users of the same computer can reach the API, and so can, in
   principle, a web page you open while it runs. Run `docker compose down` when you're not using
   it, and don't run this on a shared machine.
-- Only point `compare.sh` and your own scripts at machines you are allowed to test.
+- Only point `example.sh` and your own scripts at machines you are allowed to test.
 
 ## License
 
