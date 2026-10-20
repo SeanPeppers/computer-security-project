@@ -8,8 +8,8 @@ services:
     environment:
       ROOT_PASSWORD: ${ROOT_PASSWORD:?copy .env.example to .env and set a password}
     ports:
-      - "127.0.0.1:2222:22"
-      - "127.0.0.1:2375:2375"
+      - "127.0.0.1:${SSH_PORT:-2222}:22"
+      - "127.0.0.1:${API_PORT:-2375}:2375"
     volumes:
       - docker-data:/var/lib/docker
 

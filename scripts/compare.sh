@@ -11,8 +11,8 @@
 # Everything is appended to evidence.log.
 set -euo pipefail
 
-A_HOST=${A_HOST:-127.0.0.1} A_SSH=${A_SSH:-2222} A_API=${A_API:-2375}
-B_HOST=${B_HOST:-127.0.0.1} B_SSH=${B_SSH:-2222} B_API=${B_API:-2375}
+A_HOST=${A_HOST:-127.0.0.1} A_SSH=${A_SSH:-${SSH_PORT:-2222}} A_API=${A_API:-${API_PORT:-2375}}
+B_HOST=${B_HOST:-127.0.0.1} B_SSH=${B_SSH:-${SSH_PORT:-2222}} B_API=${B_API:-${API_PORT:-2375}}
 LOG=${LOG:-evidence.log}
 PAUSE=${PAUSE:-3}  # seconds between requests, so scripts don't hammer a machine
 SOCK_DIR=$(mktemp -d)

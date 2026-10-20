@@ -12,10 +12,15 @@ jobs:
           docker compose up -d --build
           for i in $(seq 90); do docker compose logs | grep -q 'test machine ready' && break; sleep 2; done
           docker compose logs
+          docker compose logs | grep -q 'test machine ready'
       - name: Docker API answers, only on localhost
         run: |
           curl -sf http://127.0.0.1:2375/version
           docker compose port target 2375 | grep -q '^127.0.0.1:'
+      - name: compare.sh logs an API check
+        run: |
+          PAUSE=1 scripts/compare.sh api /_ping
+          grep -c '^OK$' evidence.log | grep -qx 2
       - name: SSH accepts root by password
         run: |
           sudo apt-get install -y sshpass >/dev/null

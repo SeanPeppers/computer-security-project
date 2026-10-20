@@ -20,6 +20,8 @@ docker compose logs -f      # wait for "test machine ready"
 - SSH: `ssh -p 2222 root@127.0.0.1`
 - Docker API: `http://127.0.0.1:2375`
 
+If those ports are taken on your computer, set `SSH_PORT` and `API_PORT` in `.env`.
+
 Stop with `docker compose down`; `docker compose down -v` also wipes its inner Docker data.
 
 ## Try it
@@ -30,11 +32,11 @@ curl -s http://127.0.0.1:2375/version
 curl -s http://127.0.0.1:2375/containers/json
 DOCKER_HOST=tcp://127.0.0.1:2375 docker run --rm hello-world   # docker CLI against the API
 
-# Run a check and log the command, output and UTC time to evidence.log
+# Run a check on A and B and log the command, outputs and UTC times to evidence.log
 scripts/compare.sh ssh 'uname -a'
 scripts/compare.sh api /info
 
-# Timing: 10 runs, 3 s apart, every number reported
+# Timing: 10 runs on A, then 10 on B, 3 s apart, every number reported
 scripts/compare.sh time ssh 'ls /usr/bin | wc -l' 10
 
 # Record a whole terminal session as plain text
@@ -42,8 +44,10 @@ script -q session.log
 ```
 
 `compare.sh` runs each check on two machines, A and B, and logs both. Here both default to this
-test machine, so you can build and debug the script against one box. To compare two real hosts
-later, set `A_HOST`, `A_SSH`, `A_API`, `B_HOST`, `B_SSH` and `B_API`.
+test machine, so each check runs twice against the same box, which is enough to build and
+debug the script. If you changed the ports, export `SSH_PORT` and `API_PORT` in your shell
+too. To compare two real hosts later, set `A_HOST`, `A_SSH`, `A_API`, `B_HOST`, `B_SSH` and
+`B_API`.
 
 After `docker compose down` and a fresh `up`, the machine gets a new SSH host key and SSH warns
 that the key changed. That's expected. Clear the old key with `ssh-keygen -R '[127.0.0.1]:2222'`,
