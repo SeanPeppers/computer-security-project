@@ -1,0 +1,30 @@
+# Two identical test machines, for scripts that compare two hosts.
+# Ports are bound to 127.0.0.1 only: an open Docker API is root on whatever can reach it.
+x-target: &target
+  build: ./docker
+  privileged: true  # needed for Docker inside the container
+  environment:
+    ROOT_PASSWORD: ${ROOT_PASSWORD:?copy .env.example to .env and set a password}
+
+services:
+  target-a:
+    <<: *target
+    hostname: target-a
+    ports:
+      - "127.0.0.1:2221:22"
+      - "127.0.0.1:23751:2375"
+    volumes:
+      - docker-a:/var/lib/docker
+
+  target-b:
+    <<: *target
+    hostname: target-b
+    ports:
+      - "127.0.0.1:2222:22"
+      - "127.0.0.1:23752:2375"
+    volumes:
+      - docker-b:/var/lib/docker
+
+volumes:
+  docker-a:
+  docker-b:
