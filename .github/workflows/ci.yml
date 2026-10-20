@@ -5,7 +5,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - run: shellcheck docker/entrypoint.sh scripts/compare.sh
+      - run: shellcheck docker/entrypoint.sh scripts/example.sh
       - name: start the test machine
         run: |
           printf 'ROOT_PASSWORD=ci-only\n' > .env
@@ -17,9 +17,9 @@ jobs:
         run: |
           curl -sf http://127.0.0.1:2375/version
           docker compose port target 2375 | grep -q '^127.0.0.1:'
-      - name: compare.sh logs an API check
+      - name: example.sh logs an API check
         run: |
-          PAUSE=1 scripts/compare.sh api /_ping
+          PAUSE=1 scripts/example.sh api /_ping
           grep -c '^OK$' evidence.log | grep -qx 2
       - name: SSH accepts root by password
         run: |
