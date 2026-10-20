@@ -1,17 +1,18 @@
 #!/usr/bin/env bash
-# Run the same check on two machines and log the exact command, each machine's output,
-# and the UTC time it ran.
+# Run the same check on two machines (A and B) and log the exact command, each machine's
+# output, and the UTC time it ran.
 #
 #   scripts/compare.sh ssh 'uname -a'            # same shell command over SSH on A and B
 #   scripts/compare.sh api /containers/json      # same Docker API GET on A and B
 #   scripts/compare.sh time ssh 'true' 10        # timing: N runs per machine, 3 s apart
 #
-# Targets default to the two local test containers. Point them elsewhere with
-# A_HOST/A_SSH/A_API and B_HOST/B_SSH/B_API. Everything is appended to evidence.log.
+# A and B both default to the local test machine, so the script can be built and tried
+# against one box; point them at two hosts with A_HOST/A_SSH/A_API and B_HOST/B_SSH/B_API.
+# Everything is appended to evidence.log.
 set -euo pipefail
 
-A_HOST=${A_HOST:-127.0.0.1} A_SSH=${A_SSH:-2221} A_API=${A_API:-23751}
-B_HOST=${B_HOST:-127.0.0.1} B_SSH=${B_SSH:-2222} B_API=${B_API:-23752}
+A_HOST=${A_HOST:-127.0.0.1} A_SSH=${A_SSH:-${SSH_PORT:-2222}} A_API=${A_API:-${API_PORT:-2375}}
+B_HOST=${B_HOST:-127.0.0.1} B_SSH=${B_SSH:-${SSH_PORT:-2222}} B_API=${B_API:-${API_PORT:-2375}}
 LOG=${LOG:-evidence.log}
 PAUSE=${PAUSE:-3}  # seconds between requests, so scripts don't hammer a machine
 SOCK_DIR=$(mktemp -d)
