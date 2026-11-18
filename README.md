@@ -39,9 +39,28 @@ scripts/example.sh api /info
 # Timing: 10 runs on A, then 10 on B, 3 s apart, every number reported
 scripts/example.sh time ssh 'ls /usr/bin | wc -l' 10
 
+# Compare two machines side by side and log every difference that could out a honeypot
+scripts/fingerprint.sh
+
 # Record a whole terminal session as plain text
 script -q session.log
 ```
+
+`scripts/fingerprint.sh` builds on `example.sh` for the honeypot-detection angle: in one SSH round
+trip per machine it collects ~25 host signals (kernel, uptime, process and package counts, entropy,
+containerization, monitoring agents, shell history, listening ports, ...), pulls `/version` and
+`/info` from each Docker API, and writes three things to `fingerprint.log`:
+
+- **SIGNALS** — a line-by-line diff of A against B; every differing line is something an attacker
+  could use to tell the two apart.
+- **DOCKER** — the same diff for the Docker API responses.
+- **TELLS** — per machine, the classic honeypot giveaways it found (running in a container, freshly
+  booted, empty root shell history, auditd watching, a sparse minimal image, low entropy, ...).
+
+A and B both default to the local test machine, so by itself it compares the box to itself (empty
+diff, matching tells — a self-test). Point them at two hosts with `A_HOST`/`A_SSH`/`A_API` and
+`B_HOST`/`B_SSH`/`B_API` to compare a suspected decoy against a known-real box. The probes are
+read-only heuristics; run them only on machines you are allowed to test.
 
 `scripts/example.sh` is a starting point for your own script: it runs each check on two machines, A and B, and logs both. Here both default to this
 test machine, so each check runs twice against the same box, which is enough to build and

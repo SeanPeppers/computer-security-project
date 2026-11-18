@@ -5,7 +5,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - run: shellcheck docker/entrypoint.sh scripts/example.sh
+      - run: shellcheck docker/entrypoint.sh scripts/example.sh scripts/fingerprint.sh
       - name: start the test machine
         run: |
           printf 'ROOT_PASSWORD=ci-only\n' > .env
@@ -25,3 +25,10 @@ jobs:
         run: |
           sudo apt-get install -y sshpass >/dev/null
           sshpass -p ci-only ssh -o StrictHostKeyChecking=no -p 2222 root@127.0.0.1 'id -u' | grep -qx 0
+      - name: fingerprint.sh compares A and B and flags the container
+        run: |
+          # A and B default to the same box, so signals match but the honeypot tells still fire.
+          SSHPASS=ci-only SSH_OPTS="-o PreferredAuthentications=password -o PubkeyAuthentication=no" \
+            sshpass -e scripts/fingerprint.sh
+          grep -q 'A and B look identical on every signal' fingerprint.log
+          grep -q '/.dockerenv present' fingerprint.log
